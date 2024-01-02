@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" name="" id="">
+    <script>
+        const input = document.querySelector("input");
+        input.addEventListener("change", (e)=>{
+        const form = new FormData();
+        const headers = new FormData();
+        headers.append("content-type", "multipart/form-data");
+        form.append("file", input.files.item(0));
+        fetch("http://localhost:8080/invitingimage",{headers: headers, method: "POST", form});
+        })
+    </script>
+</body>
+</html>
