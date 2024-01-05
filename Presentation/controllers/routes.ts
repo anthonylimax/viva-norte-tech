@@ -1,39 +1,59 @@
 import multer from "multer";
+import {validate} from "cpf-check";
 import { Application, Response } from "express";
-import {FileArrayRenamed, returnURI} from "./../Middlewares/functions_route"
+import {FileArrayRenamed, returnURI} from "../util/functions_route"
 import { AnnouncementDefault } from "../../externals/interfaces/IDatabaseAdapter";
 import { DatabaseMySQL } from "../../externals/mysql";
 import { HandlerUpload } from "../../externals/cloudnary.config";
+import { Login } from "../../useCases/verifyLogin";
 
 const multerConfig = multer.memoryStorage();
 const upload = multer({storage : multerConfig})
 
 export default function HandlerRoutes(app : Application){
+    
+const sql = new DatabaseMySQL();
 
-app.post("/invitingImage", upload.fields([{name: "file"}, {name: "content"}]), async (request : any, response : Response)=> {
-    // try{
-    //     if(request.files.file != undefined){
-    //         const file = FileArrayRenamed(request.files.file);
-    //         const dataURI = returnURI(file);
-    //         const sql = new DatabaseMySQL();
-    //         const uris : string[] = [];
-    //             images.forEach(async (element : string, index : number)=>{
-    //                 uris.push(await HandlerUpload(element, req[index]));
-    //             })
-    //         sql.AddNewImages(url, JSON.parse(request.body.content).id);
-    //         response.json({complete: true, description: "recebido o request"});
-    //     }
-    //     else{
-    //         response.sendStatus(404).json({error: 200, description: "não há imagem"});
-    //     }
-    // }
-    // catch(e){
-    //     console.log(e);
-    //     response.sendStatus(404).json({error: 200, description: "não há imagem"});
-    // }
+
+app.post("/createNewUser", async (req, res)=>{
+    try{
+        const newCredentials = {
+            email: req.body.email,
+            password: req.body.password,
+            cpf: req.body.cpf,
+            phone: req.body.phone,
+            name: req.body.name
+        }
+        if(validate(newCredentials.cpf)){
+            const result = await sql.CreateNewUser(newCredentials);
+            result ? res.json({
+                status : "completed",
+                operation : "making an account!"
+            }) : res.json({
+                status : "uncompleted, one error!",
+                operation : "making an account!"
+            }) 
+        }
+
+    }
+    catch(e){
+        
+    }
 })
+
 app.get("/", (req, res) =>{
     res.send("askaospas");
+})
+app.post("/loginVerification", async (request, response)=>{
+    const loginCase = new Login(sql);
+    console.log(request.body);
+    const result = await loginCase.VerifyLogin(request.body); 
+    if(result !== undefined){
+        response.json(result);
+    }
+    else{
+        response.json({error: "something wrong", operation: "login"});
+    }
 })
 app.post("/createNewAnnouncement", upload.fields([{ name: "file" }, { name: "content" }]), async (request: any, response: Response) => {
     try {
@@ -53,7 +73,6 @@ app.post("/createNewAnnouncement", upload.fields([{ name: "file" }, { name: "con
             images: images,
         };
 
-        const sql = new DatabaseMySQL();
         const id = await sql.CreateNewAnnouncement(announcement);
 
         const uploadTasks = images.map(async (element: string, index: number) => {
