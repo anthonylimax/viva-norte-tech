@@ -41,12 +41,14 @@ app.post("/createNewUser", async (req, res)=>{
     }
 })
 
-app.get("/", (req, res) =>{
-    res.send("askaospas");
+app.post("/announcement/id", async (req, res) =>{
+    const data = req.body;
+    console.log(data)
+    const result = await sql.GetSingleAnnouncement(data.id);
+    res.send(result);
 })
 app.post("/loginVerification", async (request, response)=>{
     const loginCase = new Login(sql);
-    console.log(request.body);
     const result = await loginCase.VerifyLogin(request.body); 
     if(result !== undefined){
         response.json(result);

@@ -3,6 +3,8 @@ export interface IDatabaseAdapter{
     CreateNewUser(credentials : CredentialsDefault) : Promise<boolean>
     AddNewImages(images: string[], id : string) : Promise<void>
     VerifyLogin(credentials : CredentialsForLogin) : Promise<any>
+    GetSingleAnnouncement(id : string) : Promise<any>
+
 }
 
 export type AnnouncementDefault = {
