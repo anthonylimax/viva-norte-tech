@@ -6,6 +6,7 @@ import { AnnouncementDefault } from "../../externals/interfaces/IDatabaseAdapter
 import { DatabaseMySQL } from "../../externals/mysql";
 import { HandlerUpload } from "../../externals/cloudnary.config";
 import { Login } from "../../useCases/verifyLogin";
+import { Maps } from "../../externals/maps";
 
 const multerConfig = multer.memoryStorage();
 const upload = multer({storage : multerConfig})
@@ -13,6 +14,17 @@ const upload = multer({storage : multerConfig})
 export default function HandlerRoutes(app : Application){
     
 const sql = new DatabaseMySQL();
+
+app.post("/getLocalization", async (req, res) =>{
+    try{
+        const query = await new Maps().getAdressWithLatLong(req.body.lat, req.body.long);
+        console.log(query)
+        res.json(query)
+    }
+    catch(e){
+        console.log(e);
+    }
+})
 
 
 app.post("/createNewUser", async (req, res)=>{
