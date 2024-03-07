@@ -26,6 +26,15 @@ app.post("/getLocalization", async (req, res) =>{
     }
 })
 
+app.get("/getAll", async (req, res) =>{
+    try{
+        const request = await sql.GetAllAnnouncements();
+        res.json(request)
+    }
+    catch(e){
+
+    }
+})
 
 app.post("/createNewUser", async (req, res)=>{
     try{
