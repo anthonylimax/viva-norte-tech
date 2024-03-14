@@ -13,6 +13,7 @@ export function AnnouncementDTO(announcement: any, pictures: any) {
       cond: announcement["cond"],
       tariffBomber: announcement["tariffBomber"],
       IPTU: announcement["IPTU"],
+      agent_number: announcement["agent_number"],
     },
     details: {
       box_blindex: announcement["box_blindex"],
