@@ -14,6 +14,13 @@ const upload = multer({ storage: multerConfig });
 export default function HandlerRoutes(app: Application) {
   const sql = new DatabaseMySQL();
   const maps = new Maps();
+
+  app.post("/searchAnnouncements", async (req, res) => {
+    const data = req.body;
+    const result = await sql.SingleConsult(data);
+    res.json(result);
+  });
+
   app.post("/getLocalization", async (req, res) => {
     try {
       const query = await maps.getAdressWithLatLong(
