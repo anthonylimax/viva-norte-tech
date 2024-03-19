@@ -30,8 +30,19 @@ export class DatabaseMySQL implements IDatabaseAdapter {
           keys.length > index + 1 ? "and " : ""
         }`;
       });
-      const [rows] = await this.database.query(query);
-      return rows;
+      const [announcement] = await this.database.query(query);
+      const [pictures]: any[] = await this.database.query(
+        "select url, id, id_announcements from Pictures"
+      );
+
+      const content: any[] = [];
+      announcement.forEach((element: any) => {
+        const pics = pictures.filter(
+          (x: any) => x.id_announcements == element.id_announcement
+        );
+        content.push(AnnouncementDTO(element, pics));
+      });
+      return content;
     } catch (e) {
       console.log(e);
       return [];
@@ -143,7 +154,11 @@ export class DatabaseMySQL implements IDatabaseAdapter {
         "select * from user where password = ? and email = ?",
         [credentials.password, credentials.email]
       );
-      return rows;
+      if (rows.length > 0) {
+        return rows;
+      } else {
+        return false;
+      }
     } catch (e) {
       console.log(e);
     }

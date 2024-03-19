@@ -51,13 +51,17 @@ export default function HandlerRoutes(app: Application) {
 
   app.post("/createNewUser", async (req, res) => {
     try {
+      const result = JSON.parse(req.body.content);
       const newCredentials = {
-        email: req.body.email,
-        password: req.body.password,
-        cpf: req.body.cpf,
-        phone: req.body.phone,
-        name: req.body.name,
+        email: result.email,
+        password: result.password,
+        cpf: result.cpf,
+        phone: result.phone,
+        birthday: result.date,
+        name: result.name,
       };
+      const picture = req.body.file;
+      console.log(picture, newCredentials);
       if (validate(newCredentials.cpf)) {
         const result = await sql.CreateNewUser(newCredentials);
         result
@@ -70,7 +74,12 @@ export default function HandlerRoutes(app: Application) {
               operation: "making an account!",
             });
       }
-    } catch (e) {}
+    } catch (e) {
+      res.json({
+        status: false,
+        operation: "something wrong in sistem",
+      });
+    }
   });
 
   app.post("/announcement/id", async (req, res) => {
