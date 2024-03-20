@@ -49,38 +49,77 @@ export default function HandlerRoutes(app: Application) {
     } catch (e) {}
   });
 
-  app.post("/createNewUser", async (req, res) => {
-    try {
-      const result = JSON.parse(req.body.content);
-      const newCredentials = {
-        email: result.email,
-        password: result.password,
-        cpf: result.cpf,
-        phone: result.phone,
-        birthday: result.date,
-        name: result.name,
-      };
-      const picture = req.body.file;
-      console.log(picture, newCredentials);
-      if (validate(newCredentials.cpf)) {
-        const result = await sql.CreateNewUser(newCredentials);
-        result
-          ? res.json({
-              status: "completed",
-              operation: "making an account!",
-            })
-          : res.json({
-              status: "uncompleted, one error!",
-              operation: "making an account!",
-            });
-      }
-    } catch (e) {
-      res.json({
-        status: false,
-        operation: "something wrong in sistem",
+  app.post("/setFavorite", async (req, response) => {
+    const type = req.body.type;
+    if (type == "remove") {
+      const result = await sql.RemoveFavorite(
+        req.body.id_announcement,
+        req.body.id_user
+      );
+      response.json({
+        complete: true,
+      });
+    } else if (type == "add") {
+      const result = await sql.InsertFavorite(
+        req.body.id_announcement,
+        req.body.id_user
+      );
+      response.json({
+        complete: true,
       });
     }
   });
+
+  app.post("/getFavorites", async (req, res) => {
+    try {
+      const id = req.body.id;
+      const result = await sql.GetAllFavorites(id);
+      console.log(result, id);
+      if (result == undefined) {
+        res.send([]);
+      } else {
+        res.send(result);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  });
+  app.post(
+    "/createNewUser",
+    upload.fields([{ name: "file" }, { name: "content" }]),
+    async (req: any, res) => {
+      try {
+        const result = JSON.parse(req.body.content);
+        const newCredentials = {
+          email: result.email,
+          password: result.password,
+          cpf: result.cpf,
+          phone: result.phone,
+          birthday: result.date,
+          name: result.name,
+        };
+        console.log(result);
+        if (validate(newCredentials.cpf)) {
+          const result = await sql.CreateNewUser(newCredentials);
+          result
+            ? res.json({
+                status: "completed",
+                operation: "making an account!",
+              })
+            : res.json({
+                status: "uncompleted, one error!",
+                operation: "making an account!",
+              });
+        }
+      } catch (e) {
+        console.log(req.body.content);
+        res.json({
+          status: false,
+          operation: "something wrong in sistem",
+        });
+      }
+    }
+  );
 
   app.post("/announcement/id", async (req, res) => {
     const data = req.body;

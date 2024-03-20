@@ -114,7 +114,7 @@ export class DatabaseMySQL implements IDatabaseAdapter {
       );
       if (analising) {
         const [rows] = await this.database.query(
-          "insert into user values (?, ?, ?, ?, ?, ?)",
+          "insert into user values (?, ?, ?, ?, ?, ?, ?, ?)",
           [
             uuid,
             credentials.name.toUpperCase(),
@@ -122,6 +122,8 @@ export class DatabaseMySQL implements IDatabaseAdapter {
             credentials.cpf,
             credentials.email,
             credentials.phone,
+            "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1710777670/itqgrz5w3rda9icv87k4.jpg",
+            "12121212",
           ]
         );
         console.log(rows);
@@ -162,6 +164,27 @@ export class DatabaseMySQL implements IDatabaseAdapter {
     } catch (e) {
       console.log(e);
     }
+  }
+  async GetAllFavorites(id: string) {
+    const [rows] = await this.database.query(
+      "select ID_ANNOUNCEMENT FROM FAVORITES WHERE ID_USER = ?",
+      [id]
+    );
+    return rows;
+  }
+  async RemoveFavorite(id_announcement: string, id_user: string) {
+    const [rows] = await this.database.query(
+      "delete from FAVORITES where ID_USER= ? and ID_ANNOUNCEMENT= ?",
+      [id_user, id_announcement]
+    );
+    return rows[0];
+  }
+  async InsertFavorite(id_announcement: string, id_user: string) {
+    const [rows] = await this.database.query(
+      "insert into FAVORITES(ID_ANNOUNCEMENT, ID_USER) values (?, ?)",
+      [id_announcement, id_user]
+    );
+    return rows[0];
   }
 
   async AddNewImages(images: string[], id: string): Promise<void> {
