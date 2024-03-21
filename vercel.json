@@ -2,12 +2,12 @@
     "version": 2,
     "builds": [
       {
-        "src": "./**",
-        "use": "@vercel/node"
+        "src": "./build/index.js",
+        "use": "@now/node"
       }
     ],
     "routes": [
-      { "dest": "./Presentation/controllers/routes.ts", 
+      { "dest": "./build/index.js", 
         "src": "/(.*)" }
     ]
   }
