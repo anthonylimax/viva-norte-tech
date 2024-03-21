@@ -7,7 +7,7 @@
       }
     ],
     "routes": [
-      { "dest": "./index.ts", 
+      { "dest": "./Presentation/controllers/routes.ts", 
         "src": "/(.*)" }
     ]
   }
