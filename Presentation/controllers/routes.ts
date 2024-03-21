@@ -21,10 +21,6 @@ export default function HandlerRoutes(app: Application) {
     res.json(result);
   });
 
-  app.get("/",(req, res)=>{
-    res.send("Boas Vindas")
-  });
-
   app.post("/getLocalization", async (req, res) => {
     try {
       const query = await maps.getAdressWithLatLong(
@@ -46,7 +42,7 @@ export default function HandlerRoutes(app: Application) {
     } catch (e) {}
   });
 
-  app.get("/getAll", async (req, res) => {
+  app.get("/", async (req, res) => {
     try {
       const request = await sql.GetAllAnnouncements();
       res.json(request);
