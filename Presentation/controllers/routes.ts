@@ -21,6 +21,10 @@ export default function HandlerRoutes(app: Application) {
     res.json(result);
   });
 
+  app.get("/",(req, res)=>{
+    res.send("Boas Vindas")
+  });
+
   app.post("/getLocalization", async (req, res) => {
     try {
       const query = await maps.getAdressWithLatLong(
