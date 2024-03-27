@@ -84,44 +84,40 @@ export default function HandlerRoutes(app: Application) {
       console.log(e);
     }
   });
-  app.post(
-    "/createNewUser",
-    upload.fields([{ name: "file" }, { name: "content" }]),
-    async (req: any, res) => {
-      try {
-        const result = JSON.parse(req.body.content);
-        const newCredentials = {
-          email: result.email,
-          password: result.password,
-          cpf: result.cpf,
-          phone: result.phone,
-          birthday: result.date,
-          name: result.name,
-          date: result.date,
-        };
-        if (validate(newCredentials.cpf)) {
-          const result = await sql.CreateNewUser({
-            ...newCredentials,
-          });
-          result
-            ? res.json({
-                status: "completed",
-                operation: "making an account!",
-              })
-            : res.json({
-                status: "uncompleted, one error!",
-                operation: "making an account!",
-              });
-        }
-      } catch (e) {
-        console.log(req.body.content);
-        res.json({
-          status: false,
-          operation: "something wrong in sistem",
+  app.post("/createNewUser", async (req: any, res) => {
+    try {
+      const result = req.body;
+
+      const newCredentials = {
+        email: result.email,
+        password: result.password,
+        cpf: result.cpf,
+        phone: result.phone,
+        date: result.date,
+        name: result.name,
+      };
+      if (validate(newCredentials.cpf)) {
+        const result = await sql.CreateNewUser({
+          ...newCredentials,
         });
+        result
+          ? res.json({
+              status: "completed",
+              operation: "making an account!",
+            })
+          : res.json({
+              status: "uncompleted, one error!",
+              operation: "making an account!",
+            });
       }
+    } catch (e) {
+      console.log(req.body.content);
+      res.json({
+        status: false,
+        operation: "something wrong in sistem",
+      });
     }
-  );
+  });
 
   app.post("/announcement/id", async (req, res) => {
     const data = req.body;
