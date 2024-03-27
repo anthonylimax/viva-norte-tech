@@ -29,4 +29,5 @@ export type CredentialsDefault = {
   password: string;
   cpf: string;
   phone: string;
+  date: string;
 };
