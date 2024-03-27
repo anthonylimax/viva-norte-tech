@@ -78,7 +78,7 @@ export default function HandlerRoutes(app: Application) {
       if (result == undefined) {
         res.send([]);
       } else {
-        res.send(result);
+        res.send([result]);
       }
     } catch (e) {
       console.log(e);
@@ -97,10 +97,12 @@ export default function HandlerRoutes(app: Application) {
           phone: result.phone,
           birthday: result.date,
           name: result.name,
+          date: result.date,
         };
-        console.log(result);
         if (validate(newCredentials.cpf)) {
-          const result = await sql.CreateNewUser(newCredentials);
+          const result = await sql.CreateNewUser({
+            ...newCredentials,
+          });
           result
             ? res.json({
                 status: "completed",
