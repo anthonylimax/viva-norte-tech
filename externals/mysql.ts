@@ -122,8 +122,8 @@ export class DatabaseMySQL implements IDatabaseAdapter {
             credentials.cpf,
             credentials.email,
             credentials.phone,
-            "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1710777670/itqgrz5w3rda9icv87k4.jpg",
-            "12121212",
+            "",
+            credentials.date,
           ]
         );
         console.log(rows);
